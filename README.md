@@ -1,46 +1,69 @@
-# Getting Started with Create React App
+# Getting Started with Form Builder
+The `<FormBuilder />` is using `react-hook-form` and `Material UI` libraries.
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+To use the `<FormBuilder />` component, you have to pass three props: `fields`, `onSubmit` and `validationSchema`. 
 
-## Available Scripts
 
-In the project directory, you can run:
+- `fields` prop accepts an array of field objects. Each field accept 3 required parameters: `name`, `label` and `type`
+```
+  const fields = [
+    {
+      name: "email",
+      label: "Email",
+      type: "text",
+    },
+    {
+      name: "password",
+      label: "Password",
+      type: "text",
+    },
+    { name: "submit", 
+      label: "Submit", 
+      type: "submitButton" 
+    }
+  ];
+```
+For fields with types `select` and `radio`, you can provide the additional parameter `options`, which accept an array of objects with `value` and `label` fields
+```
+  const fields = [
+   {
+      name: "selectSomething",
+      label: "Select something",
+      type: "select",
+      options: [
+        { label: "Option 1", value: "1" },
+        { label: "Option 2", value: "2" }
+      ],
+   },
+   {
+      name: "choose",
+      label: "Choose something",
+      type: "radio",
+      options: [
+        { label: "Option 1", value: "1" },
+        { label: "Option 2", value: "2" }
+      ],
+   },
+  ];
+```
+Also, you can pass additional parameters, such as `defaultValue` and `disabled`.
+The full list of type parameters:
+```
+type FormField = {
+  name: string;
+  label: string;
+  type: string;
+  disabled?: boolean;
+  options?: Array<{ value: string; label: string }>;
+  defaultValue?: string;
+};
+```
 
-### `yarn start`
-
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
-
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
-
-### `yarn test`
-
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `yarn build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `yarn eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+- `onSubmit` prop accepts a `handleSubmit` function for your form;
+- `validationSchema` prop accepts a yup validation schema object. For example:
+```
+  const schema = yup.object().shape({
+    email: yup.string().email().required(),
+    password: yup.string().min(8).max(16).required(),
+  });
+```

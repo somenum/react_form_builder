@@ -14,15 +14,6 @@ const schema = yup.object().shape({
 });
 
 const PersonalDetailsForm = () => {
-  const checkboxStyle = {
-    display: "flex",
-    width: "100%",
-    marginTop: 1,
-  };
-
-  const radioStyle = {
-    display: "flex",
-  };
   const handleSubmit = (data: Record<string, unknown>) => {
     return new Promise<void>((resolve) => {
       setTimeout(() => {
@@ -57,7 +48,6 @@ const PersonalDetailsForm = () => {
       name: "termsAndConditions",
       label: "Terms and Conditions",
       type: "checkbox",
-      customFiledContainerStyles: checkboxStyle,
     },
     {
       name: "gender",
@@ -67,7 +57,6 @@ const PersonalDetailsForm = () => {
         { label: "Male", value: "male" },
         { label: "Female", value: "female" },
       ],
-      customFiledContainerStyles: radioStyle,
     },
     { name: "submit", label: "Submit", type: "submitButton" },
   ];
