@@ -26,6 +26,7 @@ type FormFieldConfig = {
   disabled?: boolean;
   options?: Array<{ value: string; label: string }>;
   defaultValue?: string;
+  handleButtonCLick?: () => void;
 };
 
 type Props = {
@@ -166,6 +167,7 @@ const FormBuilder: FC<Props> = ({ fields, onSubmit, validationSchema }) => {
               color="primary"
               variant="contained"
               size="large"
+              onClick={fieldProp.handleButtonCLick}
               disabled={fieldProp.disabled}
               fullWidth
             >
