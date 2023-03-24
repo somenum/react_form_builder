@@ -8,11 +8,13 @@ const schema = yup.object().shape({
   password: yup.string().min(8).max(16).required(),
 });
 
-const RegistrationForm: FC = () => {
+const LoginForm: FC = () => {
   const handleSubmit = (data: Record<string, unknown>) => {
     return new Promise<void>((resolve) => {
-      setTimeout(() => resolve(), 2000);
-      console.log(data);
+      setTimeout(() => {
+        console.log(data);
+        return resolve();
+      }, 2000);
     });
   };
 
@@ -27,6 +29,7 @@ const RegistrationForm: FC = () => {
       label: "Password",
       type: "text",
     },
+    { name: "submit", label: "Submit", type: "submitButton" },
   ];
 
   return (
@@ -41,4 +44,4 @@ const RegistrationForm: FC = () => {
   );
 };
 
-export default RegistrationForm;
+export default LoginForm;

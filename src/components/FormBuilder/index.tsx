@@ -1,15 +1,20 @@
 import { yupResolver } from "@hookform/resolvers/yup";
 import LoadingButton from "@mui/lab/LoadingButton";
-import Box from "@mui/material/Box";
-import Checkbox from "@mui/material/Checkbox";
-import FormControl from "@mui/material/FormControl";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import FormLabel from "@mui/material/FormLabel";
-import MenuItem from "@mui/material/MenuItem";
-import Radio from "@mui/material/Radio";
-import RadioGroup from "@mui/material/RadioGroup";
-import Select from "@mui/material/Select";
-import TextField from "@mui/material/TextField";
+import {
+  Box,
+  Button,
+  Checkbox,
+  FormControl,
+  FormControlLabel,
+  FormHelperText,
+  FormLabel,
+  InputLabel,
+  MenuItem,
+  Radio,
+  RadioGroup,
+  Select,
+  TextField,
+} from "@mui/material";
 import React, { FC } from "react";
 import { Controller, useForm } from "react-hook-form";
 import * as yup from "yup";
@@ -18,8 +23,8 @@ type FormFieldConfig = {
   name: string;
   label: string;
   type: string;
+  disabled?: boolean;
   options?: Array<{ value: string; label: string }>;
-  required?: boolean;
   defaultValue?: string;
 };
 
@@ -41,7 +46,7 @@ const FormBuilder: FC<Props> = ({ fields, onSubmit, validationSchema }) => {
     switch (fieldProp.type) {
       case "select":
         return (
-          <div key={fieldProp.name}>
+          <Box key={fieldProp.name} mt={1}>
             <Controller
               control={control}
               name={fieldProp.name}
@@ -49,24 +54,31 @@ const FormBuilder: FC<Props> = ({ fields, onSubmit, validationSchema }) => {
                 fieldProp.defaultValue ? fieldProp.defaultValue : ""
               }
               render={({ field: { onChange, value } }) => (
-                <Select
-                  label={fieldProp.label}
-                  onChange={onChange}
-                  value={value}
-                >
-                  {fieldProp.options?.map((option) => (
-                    <MenuItem key={option.value} value={option.value}>
-                      {option.label}
-                    </MenuItem>
-                  ))}
-                </Select>
+                <FormControl fullWidth error={!!errors[fieldProp.name]}>
+                  <InputLabel id={fieldProp.label}>
+                    {fieldProp.label}
+                  </InputLabel>
+                  <Select
+                    labelId={fieldProp.label}
+                    label={fieldProp.label}
+                    onChange={onChange}
+                    value={value}
+                    disabled={fieldProp.disabled ?? false}
+                  >
+                    {fieldProp.options?.map((option) => (
+                      <MenuItem key={option.value} value={option.value}>
+                        {option.label}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
               )}
             />
-          </div>
+          </Box>
         );
       case "radio":
         return (
-          <div key={fieldProp.name}>
+          <Box key={fieldProp.name}>
             <Controller
               control={control}
               name={fieldProp.name}
@@ -81,7 +93,9 @@ const FormBuilder: FC<Props> = ({ fields, onSubmit, validationSchema }) => {
                       <FormControlLabel
                         key={option.value}
                         value={option.value}
-                        control={<Radio />}
+                        control={
+                          <Radio disabled={fieldProp.disabled ?? false} />
+                        }
                         label={option.label}
                       />
                     ))}
@@ -89,36 +103,79 @@ const FormBuilder: FC<Props> = ({ fields, onSubmit, validationSchema }) => {
                 </FormControl>
               )}
             />
-          </div>
+          </Box>
         );
       case "checkbox":
         return (
-          <div key={fieldProp.name}>
+          <Box key={fieldProp.name}>
             <Controller
               control={control}
               name={fieldProp.name}
-              defaultValue={
-                fieldProp.defaultValue ? fieldProp.defaultValue : ""
-              }
+              defaultValue={fieldProp.defaultValue ?? false}
               render={({ field: { onChange, value } }) => (
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      checked={value}
-                      defaultChecked={fieldProp.defaultValue !== ""}
-                      onChange={onChange}
-                      color="primary"
-                    />
-                  }
-                  label={fieldProp.label}
-                />
+                <FormControl error={!!errors[fieldProp.name]}>
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        style={{
+                          color: errors[fieldProp.name] ? "#d32f2f" : undefined,
+                        }}
+                        checked={value}
+                        onChange={onChange}
+                        color="primary"
+                        disabled={fieldProp.disabled ?? false}
+                      />
+                    }
+                    label={fieldProp.label}
+                  />
+                  {errors[fieldProp.name] && (
+                    <FormHelperText
+                      sx={{
+                        marginLeft: 0,
+                      }}
+                    >
+                      {errors[fieldProp.name]?.message?.toString()}
+                    </FormHelperText>
+                  )}
+                </FormControl>
               )}
             />
-          </div>
+          </Box>
+        );
+      case "submitButton":
+        return (
+          <Box key={fieldProp.name}>
+            <LoadingButton
+              type="submit"
+              color="primary"
+              variant="contained"
+              size="large"
+              disabled={!isValid}
+              loading={isSubmitting}
+              fullWidth
+            >
+              {fieldProp.label}
+            </LoadingButton>
+          </Box>
+        );
+      case "button":
+        return (
+          <Box key={fieldProp.name}>
+            <Button
+              type="button"
+              color="primary"
+              variant="contained"
+              size="large"
+              disabled={fieldProp.disabled}
+              fullWidth
+            >
+              {fieldProp.label}
+            </Button>
+          </Box>
         );
       default:
         return (
-          <div key={fieldProp.name}>
+          <Box key={fieldProp.name}>
             <Controller
               control={control}
               name={fieldProp.name}
@@ -128,6 +185,7 @@ const FormBuilder: FC<Props> = ({ fields, onSubmit, validationSchema }) => {
               render={({ field }) => (
                 <TextField
                   {...field}
+                  onBlur={field.onBlur}
                   label={fieldProp.label}
                   variant="outlined"
                   error={!!errors[fieldProp.name]}
@@ -137,11 +195,12 @@ const FormBuilder: FC<Props> = ({ fields, onSubmit, validationSchema }) => {
                       : ""
                   }
                   fullWidth
+                  disabled={fieldProp.disabled ?? false}
                   margin="dense"
                 />
               )}
             />
-          </div>
+          </Box>
         );
     }
   };
@@ -149,19 +208,6 @@ const FormBuilder: FC<Props> = ({ fields, onSubmit, validationSchema }) => {
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       {fields.map((item) => renderField(item))}
-      <Box mt={2}>
-        <LoadingButton
-          type="submit"
-          color="primary"
-          variant="contained"
-          size="large"
-          disabled={!isValid}
-          loading={isSubmitting}
-          fullWidth
-        >
-          Submit
-        </LoadingButton>
-      </Box>
     </form>
   );
 };

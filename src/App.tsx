@@ -8,12 +8,14 @@ import Container from "@mui/material/Container";
 import React from "react";
 
 import LoginForm from "./components/LoginForm";
+import PersonalDetailsForm from "./components/PersonalDetailsForm";
 
 const App = () => {
   return (
     <div className="App">
       <Container maxWidth="sm">
         <LoginForm />
+        <PersonalDetailsForm />
       </Container>
     </div>
   );
