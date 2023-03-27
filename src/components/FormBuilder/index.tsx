@@ -27,23 +27,28 @@ type FormFieldConfig = {
   options?: Array<{ value: string; label: string }>;
   defaultValue?: string;
   handleButtonClick?: () => void;
+  inputType?: string;
 };
 
 type Props = {
   fields: FormFieldConfig[];
   // eslint-disable-next-line no-unused-vars
-  onSubmit: (data: Record<string, unknown>) => void;
+  onSubmit: (data: Record<string, string | boolean>) => void;
   validationSchema: yup.AnyObject;
 };
 
-const FormBuilder: FC<Props> = ({ fields, onSubmit, validationSchema }) => {
+const FormBuilder: FC<Props> = ({
+  fields,
+  onSubmit,
+  validationSchema,
+}): JSX.Element => {
   const {
     handleSubmit,
     control,
     formState: { errors, isSubmitting, isValid },
-  } = useForm({ resolver: yupResolver(validationSchema), mode: "onChange" });
+  } = useForm({ resolver: yupResolver(validationSchema), mode: "all" });
 
-  const renderField = (fieldProp: FormFieldConfig) => {
+  const renderField = (fieldProp: FormFieldConfig): JSX.Element => {
     switch (fieldProp.type) {
       case "select":
         return (
@@ -187,6 +192,7 @@ const FormBuilder: FC<Props> = ({ fields, onSubmit, validationSchema }) => {
               render={({ field }) => (
                 <TextField
                   {...field}
+                  type={fieldProp.inputType}
                   onBlur={field.onBlur}
                   label={fieldProp.label}
                   variant="outlined"

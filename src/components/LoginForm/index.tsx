@@ -8,7 +8,7 @@ const schema = yup.object().shape({
   password: yup.string().min(8).max(16).required(),
 });
 
-const LoginForm: FC = () => {
+const LoginForm: FC = (): JSX.Element => {
   const handleSubmit = (data: Record<string, unknown>) => {
     return new Promise<void>((resolve) => {
       setTimeout(() => {

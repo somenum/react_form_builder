@@ -13,7 +13,7 @@ const schema = yup.object().shape({
   gender: yup.string().required(),
 });
 
-const PersonalDetailsForm = () => {
+const PersonalDetailsForm = (): JSX.Element => {
   const handleSubmit = (data: Record<string, unknown>) => {
     return new Promise<void>((resolve) => {
       setTimeout(() => {
